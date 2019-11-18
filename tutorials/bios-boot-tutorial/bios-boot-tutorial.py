@@ -10,6 +10,16 @@ import subprocess
 import sys
 import time
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 args = None
 logFile = None
 
@@ -33,7 +43,7 @@ def jsonArg(a):
     return " '" + json.dumps(a) + "' "
 
 def run(args):
-    print('bios-boot-tutorial.py:', args)
+    print(bcolors.OKGREEN, 'bios-boot-tutorial.py:', args, bcolors.ENDC)
     logFile.write(args + '\n')
     if subprocess.call(args, shell=True):
         print('bios-boot-tutorial.py: exiting because of error')
@@ -41,7 +51,7 @@ def run(args):
 
 def retry(args):
     while True:
-        print('bios-boot-tutorial.py:', args)
+        print(bcolors.WARNING, 'bios-boot-tutorial.py:', args, bcolors.ENDC)
         logFile.write(args + '\n')
         if subprocess.call(args, shell=True):
             print('*** Retry')
@@ -49,12 +59,12 @@ def retry(args):
             break
 
 def background(args):
-    print('bios-boot-tutorial.py:', args)
+    print(bcolors.OKBLUE, 'bios-boot-tutorial.py:', args, bcolors.ENDC)
     logFile.write(args + '\n')
     return subprocess.Popen(args, shell=True)
 
 def getOutput(args):
-    print('bios-boot-tutorial.py:', args)
+    print(bcolors.HEADER, 'bios-boot-tutorial.py:', args, bcolors.ENDC)
     logFile.write(args + '\n')
     proc = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE)
     return proc.communicate()[0].decode('utf-8')
@@ -64,7 +74,7 @@ def getJsonOutput(args):
 
 def sleep(t):
     print('sleep', t, '...')
-    time.sleep(t)
+    time.sleep(9)
     print('resume')
 
 def startWallet():
@@ -118,7 +128,9 @@ def startNode(nodeIndex, account):
         '    --private-key \'["' + account['pub'] + '","' + account['pvt'] + '"]\''
         '    --plugin eosio::http_plugin'
         '    --plugin eosio::chain_api_plugin'
-        '    --plugin eosio::producer_plugin' +
+        '    --plugin eosio::producer_plugin'
+        '    --max-transaction-time=3000'
+        '    --plugin eosio::producer_api_plugin' +
         otherOpts)
     with open(dir + 'stderr', mode='w') as f:
         f.write(cmd + '\n\n')
@@ -284,6 +296,8 @@ def stepStartWallet():
 def stepStartBoot():
     startNode(0, {'name': 'eosio', 'pvt': args.private_key, 'pub': args.public_key})
     sleep(1.5)
+def stepActiveProtocolFeatures():
+    run('curl -X POST http://127.0.0.1:8000/v1/producer/schedule_protocol_feature_activations -d \'{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}\'')
 def stepInstallSystemContracts():
     run(args.cleos + 'set contract eosio.token ' + args.contracts_dir + '/eosio.token/')
     run(args.cleos + 'set contract eosio.msig ' + args.contracts_dir + '/eosio.msig/')
@@ -334,6 +348,7 @@ commands = [
     ('w', 'wallet',             stepStartWallet,            True,    "Start keosd, create wallet, fill with keys"),
     ('b', 'boot',               stepStartBoot,              True,    "Start boot node"),
     ('s', 'sys',                createSystemAccounts,       True,    "Create system accounts (eosio.*)"),
+    ('f', 'features',           stepActiveProtocolFeatures, True,    "Activite polotools features"),
     ('c', 'contracts',          stepInstallSystemContracts, True,    "Install system contracts (token, msig)"),
     ('t', 'tokens',             stepCreateTokens,           True,    "Create tokens"),
     ('S', 'sys-contract',       stepSetSystemContract,      True,    "Set system contract"),
