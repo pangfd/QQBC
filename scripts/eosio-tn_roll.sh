@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# eosio-tn_roll is used to have all of the instances of the QQBC daemon on a host brought down
+# eosio-tn_roll is used to have all of the instances of the EOS daemon on a host brought down
 # so that the underlying executable image file (the "text file") can be replaced. Then
 # all instances are restarted.
 # usage: eosio-tn_roll.sh [arglist]
@@ -13,23 +13,23 @@
 # In most cases, simply running ./eosio-tn_roll.sh is sufficient.
 #
 
-if [ -z "$QQBCIO_HOME" ]; then
-    echo QQBCIO_HOME not set - $0 unable to proceed.
+if [ -z "$EOSIO_HOME" ]; then
+    echo EOSIO_HOME not set - $0 unable to proceed.
     exit -1
 fi
 
-cd $QQBCIO_HOME
+cd $EOSIO_HOME
 
-if [ -z "$QQBCIO_NODE" ]; then
+if [ -z "$EOSIO_NODE" ]; then
     DD=`ls -d var/lib/node_[012]?`
     ddcount=`echo $DD | wc -w`
     if [ $ddcount -gt 1 ]; then
         DD="all"
     fi
     OFS=$((${#DD}-2))
-    export QQBCIO_NODE=${DD:$OFS}
+    export EOSIO_NODE=${DD:$OFS}
 else
-    DD=var/lib/node_$QQBCIO_NODE
+    DD=var/lib/node_$EOSIO_NODE
     if [ ! \( -d $DD \) ]; then
         echo no directory named $PWD/$DD
         cd -
@@ -76,17 +76,17 @@ fi
 
 echo DD = $DD
 
-bash $QQBCIO_HOME/scripts/eosio-tn_down.sh
+bash $EOSIO_HOME/scripts/eosio-tn_down.sh
 
 cp $SDIR/$RD/$prog $RD/$prog
 
 if [ $DD = "all" ]; then
-    for QQBCIO_RESTART_DATA_DIR in `ls -d var/lib/node_??`; do
-        bash $QQBCIO_HOME/scripts/eosio-tn_up.sh "$*"
+    for EOSIO_RESTART_DATA_DIR in `ls -d var/lib/node_??`; do
+        bash $EOSIO_HOME/scripts/eosio-tn_up.sh "$*"
     done
 else
-    bash $QQBCIO_HOME/scripts/eosio-tn_up.sh "$*"
+    bash $EOSIO_HOME/scripts/eosio-tn_up.sh "$*"
 fi
-unset QQBCIO_RESTART_DATA_DIR
+unset EOSIO_RESTART_DATA_DIR
 
 cd -

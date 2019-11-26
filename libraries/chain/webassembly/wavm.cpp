@@ -88,7 +88,7 @@ class wavm_instantiated_module : public wasm_instantiated_module_interface {
             if( !call )
                return;
 
-            QQBC_ASSERT( getFunctionType(call)->parameters.size() == args.size(), wasm_exception, "" );
+            EOS_ASSERT( getFunctionType(call)->parameters.size() == args.size(), wasm_exception, "" );
 
             //The memory instance is reused across all wavm_instantiated_modules, but for wasm instances
             // that didn't declare "memory", getDefaultMemory() won't see it
@@ -139,15 +139,15 @@ std::unique_ptr<wasm_instantiated_module_interface> wavm_runtime::instantiate_mo
       Serialization::MemoryInputStream stream((const U8*)code_bytes, code_size);
       WASM::serialize(stream, *module);
    } catch(const Serialization::FatalSerializationException& e) {
-      QQBC_ASSERT(false, wasm_serialization_error, e.message.c_str());
+      EOS_ASSERT(false, wasm_serialization_error, e.message.c_str());
    } catch(const IR::ValidationException& e) {
-      QQBC_ASSERT(false, wasm_serialization_error, e.message.c_str());
+      EOS_ASSERT(false, wasm_serialization_error, e.message.c_str());
    }
 
    eosio::chain::webassembly::common::root_resolver resolver;
    LinkResult link_result = linkModule(*module, resolver);
    ModuleInstance *instance = instantiateModule(*module, std::move(link_result.resolvedImports));
-   QQBC_ASSERT(instance != nullptr, wasm_exception, "Fail to Instantiate WAVM Module");
+   EOS_ASSERT(instance != nullptr, wasm_exception, "Fail to Instantiate WAVM Module");
 
    return std::make_unique<wavm_instantiated_module>(instance, std::move(module), initial_memory);
 }

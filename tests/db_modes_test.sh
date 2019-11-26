@@ -28,44 +28,44 @@ while getopts ":lv" opt; do
    esac
 done
 
-QQBCIO_STUFF_DIR=$(mktemp -d)
-trap "rm -rf $QQBCIO_STUFF_DIR" EXIT
-NODQQBC_LAUNCH_PARAMS="./programs/nodeos/nodeos -d $QQBCIO_STUFF_DIR --config-dir $QQBCIO_STUFF_DIR \
+EOSIO_STUFF_DIR=$(mktemp -d)
+trap "rm -rf $EOSIO_STUFF_DIR" EXIT
+NODEOS_LAUNCH_PARAMS="./programs/nodeos/nodeos -d $EOSIO_STUFF_DIR --config-dir $EOSIO_STUFF_DIR \
 --chain-state-db-size-mb 8 --chain-state-db-guard-size-mb 0 --reversible-blocks-db-size-mb 1 \
 --reversible-blocks-db-guard-size-mb 0 -e -peosio"
 
 run_nodeos() {
    if (( $VERBOSE == 0 )); then
-      $NODQQBC_LAUNCH_PARAMS --http-server-address '' --p2p-listen-endpoint '' "$@" 2>/dev/null &
+      $NODEOS_LAUNCH_PARAMS --http-server-address '' --p2p-listen-endpoint '' "$@" 2>/dev/null &
    else
-      $NODQQBC_LAUNCH_PARAMS --http-server-address '' --p2p-listen-endpoint '' "$@" &
+      $NODEOS_LAUNCH_PARAMS --http-server-address '' --p2p-listen-endpoint '' "$@" &
    fi
 }
 
 run_expect_success() {
    run_nodeos "$@"
-   local NODQQBC_PID=$!
+   local NODEOS_PID=$!
    sleep 10
-   kill $NODQQBC_PID
-   wait $NODQQBC_PID
+   kill $NODEOS_PID
+   wait $NODEOS_PID
 }
 
 run_and_kill() {
    run_nodeos "$@"
-   local NODQQBC_PID=$!
+   local NODEOS_PID=$!
    sleep 10
-   kill -KILL $NODQQBC_PID
-   ! wait $NODQQBC_PID
+   kill -KILL $NODEOS_PID
+   ! wait $NODEOS_PID
 }
 
 run_expect_failure() {
    run_nodeos "$@"
-   local NODQQBC_PID=$!
+   local NODEOS_PID=$!
    MYPID=$$
    (sleep 20; kill -ALRM $MYPID) & local TIMER_PID=$!
-   trap "kill $NODQQBC_PID; wait $NODQQBC_PID; exit 1" ALRM
+   trap "kill $NODEOS_PID; wait $NODEOS_PID; exit 1" ALRM
    sleep 10
-   if wait $NODQQBC_PID; then exit 1; fi
+   if wait $NODEOS_PID; then exit 1; fi
    kill $TIMER_PID
    trap ALRM
 }

@@ -19,7 +19,7 @@ public:
 
       uint64_t primary_key()const { return key; }
 
-      QQBCLIB_SERIALIZE( payload, (key)(data) )
+      EOSLIB_SERIALIZE( payload, (key)(data) )
    };
 
    using payloads_table = eosio::multi_index< "payloads"_n,  payload >;
