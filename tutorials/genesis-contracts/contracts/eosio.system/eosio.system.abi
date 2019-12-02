@@ -272,6 +272,20 @@
             ]
         },
         {
+            "name": "changeit",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "quanity",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
             "name": "claimrewards",
             "base": "",
             "fields": [
@@ -618,6 +632,24 @@
                 {
                     "name": "core",
                     "type": "symbol"
+                }
+            ]
+        },
+        {
+            "name": "interest_rate",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "balance",
+                    "type": "asset"
+                },
+                {
+                    "name": "last_time",
+                    "type": "time_point_sec"
                 }
             ]
         },
@@ -1446,6 +1478,20 @@
             ]
         },
         {
+            "name": "update",
+            "base": "",
+            "fields": [
+                {
+                    "name": "from",
+                    "type": "name"
+                },
+                {
+                    "name": "day",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
             "name": "updateauth",
             "base": "",
             "fields": [
@@ -1637,6 +1683,11 @@
             "name": "canceldelay",
             "type": "canceldelay",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Cancel Delayed Transaction\nsummary: '{{nowrap canceling_auth.actor}} cancels a delayed transaction'\nicon: http://127.0.0.1/ricardian_assets/eosio.contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\n\n{{canceling_auth.actor}} cancels the delayed transaction with id {{trx_id}}."
+        },
+        {
+            "name": "changeit",
+            "type": "changeit",
+            "ricardian_contract": ""
         },
         {
             "name": "claimrewards",
@@ -1854,6 +1905,11 @@
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Buy REX Tokens Using Staked Tokens\nsummary: '{{nowrap owner}} buys REX tokens in exchange for tokens currently staked to NET and/or CPU'\nicon: http://127.0.0.1/ricardian_assets/eosio.contracts/icons/rex.png#d229837fa62a464b9c71e06060aa86179adf0b3f4e3b8c4f9702f4f4b0c340a8\n---\n\n{{from_net}} and {{from_cpu}} are withdrawn from {{receiver}}’s NET and CPU bandwidths respectively. These funds are used to purchase REX tokens at the current market exchange rate. In order for the action to succeed, {{owner}} must have voted for a proxy or at least 21 block producers.\n\nA sell order of the purchased amount can only be initiated after waiting for the maturity period of 4 to 5 days to pass. Even then, depending on the market conditions, the initiated sell order may not be executed immediately."
         },
         {
+            "name": "update",
+            "type": "update",
+            "ricardian_contract": ""
+        },
+        {
             "name": "updateauth",
             "type": "updateauth",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Modify Account Permission\nsummary: 'Add or update the {{nowrap permission}} permission of {{nowrap account}}'\nicon: http://127.0.0.1/ricardian_assets/eosio.contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\n\nModify, and create if necessary, the {{permission}} permission of {{account}} to have a parent permission of {{parent}} and the following authority:\n{{to_json auth}}"
@@ -1932,6 +1988,13 @@
         {
             "name": "global4",
             "type": "eosio_global_state4",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "interests",
+            "type": "interest_rate",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
