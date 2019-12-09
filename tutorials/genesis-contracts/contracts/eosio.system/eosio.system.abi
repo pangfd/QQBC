@@ -272,20 +272,6 @@
             ]
         },
         {
-            "name": "changeit",
-            "base": "",
-            "fields": [
-                {
-                    "name": "owner",
-                    "type": "name"
-                },
-                {
-                    "name": "quanity",
-                    "type": "asset"
-                }
-            ]
-        },
-        {
             "name": "claimrewards",
             "base": "",
             "fields": [
@@ -1683,11 +1669,6 @@
             "name": "canceldelay",
             "type": "canceldelay",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Cancel Delayed Transaction\nsummary: '{{nowrap canceling_auth.actor}} cancels a delayed transaction'\nicon: http://127.0.0.1/ricardian_assets/eosio.contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\n\n{{canceling_auth.actor}} cancels the delayed transaction with id {{trx_id}}."
-        },
-        {
-            "name": "changeit",
-            "type": "changeit",
-            "ricardian_contract": ""
         },
         {
             "name": "claimrewards",
