@@ -7,7 +7,7 @@ echo "Disk space available: ${DISK_AVAIL}G"
 
 ( [[ $NAME == "Ubuntu" ]] && ( [[ "$(echo ${VERSION_ID})" == "16.04" ]] || [[ "$(echo ${VERSION_ID})" == "18.04" ]] )  ) || ( echo " - You must be running 16.04.x or 18.04.x to install EOSIO." && exit 1 )
 
-[[ $MEM_GIG -lt 1 ]] && echo "Your system must have 7 or more Gigabytes of physical memory installed." && exit 1
+[[ $MEM_GIG -lt 4 ]] && echo "Your system must have 7 or more Gigabytes of physical memory installed." && exit 1
 [[ "${DISK_AVAIL}" -lt "${DISK_MIN}" ]] && echo " - You must have at least ${DISK_MIN}GB of available storage to install EOSIO." && exit 1
 
 # system clang and build essential for Ubuntu 18 (16 too old)
@@ -41,7 +41,7 @@ if $INSTALL_MONGO; then
 	echo "${COLOR_CYAN}[Ensuring MongoDB installation]${COLOR_NC}"
 	if [[ ! -d $MONGODB_ROOT ]]; then
 		execute bash -c "cd $SRC_DIR && \
-			cp /src/mongodb-linux-x86_64-ubuntu1804-4.1.1.tgz . \
+		curl -OL http://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu${VERSION_MAJ}${VERSION_MIN}-$MONGODB_VERSION.tgz \
 		&& tar -xzf mongodb-linux-x86_64-ubuntu${VERSION_MAJ}${VERSION_MIN}-${MONGODB_VERSION}.tgz \
 		&& mv $SRC_DIR/mongodb-linux-x86_64-ubuntu${VERSION_MAJ}${VERSION_MIN}-${MONGODB_VERSION} $MONGODB_ROOT \
 		&& touch $MONGODB_LOG_DIR/mongod.log \
@@ -59,7 +59,7 @@ if $INSTALL_MONGO; then
 	echo "${COLOR_CYAN}[Ensuring MongoDB C driver installation]${COLOR_NC}"
 	if [[ ! -d $MONGO_C_DRIVER_ROOT ]]; then
 		execute bash -c "cd $SRC_DIR && \
-		cp /src/mongo-c-driver-1.13.0.tar.gz . \
+		curl -LO https://github.com/mongodb/mongo-c-driver/releases/download/$MONGO_C_DRIVER_VERSION/mongo-c-driver-$MONGO_C_DRIVER_VERSION.tar.gz \
 		&& tar -xzf mongo-c-driver-$MONGO_C_DRIVER_VERSION.tar.gz \
 		&& cd mongo-c-driver-$MONGO_C_DRIVER_VERSION \
 		&& mkdir -p cmake-build \
